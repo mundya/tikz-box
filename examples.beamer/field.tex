@@ -1,0 +1,96 @@
+%% Electric Field Strength surrounding Charged Particles
+%% -----------------------------------------------------
+%% (C) Andrew Mundy 2013
+%% 
+%% Requirements
+%% ------------
+%% \usepackage{tikz}
+%% \usepackage{etoolbox}
+
+\begin{tikzpicture}
+
+%% Create a list of charged particles, in the form x/y/c where x and y are co-ordinates, and c is
+%% the particle charge.
+\def\particles{%
+	-1/0/ 1, %  1C at (-1, 0)
+	 1/0/-1	 % -1C at ( 1, 0)
+}
+
+%% Calculate the electric field constant k_e
+%% k_e = 1/(4\pi*\epsilon_0) -- where we will let \epsilon_0 = 1
+\pgfmathsetmacro\ke{1/(4*pi)}
+
+%% Determine the maximum possible field magnitude for hue scaling.
+\def\Emax{0}
+\foreach [remember=\Emax as \Emax] \x/\y/\c in \particles {
+	\pgfmathsetmacro\Emax{\Emax + abs(\c)}
+}
+\pgfmathsetmacro\Emax{\Emax*\ke}
+
+%% Now, iterate over the given space, at each point determining the field contribution from each 
+%% particle, and using superposition to determine the resultant field magnitude and direction.  This is
+%% then displayed through drawing an arrow at the  point, with the hue illustrating the field strength.
+\foreach \x in {-4.0, -3.75, ..., 4.0}{%	For each x
+	\foreach \y in {-2, -1.5, ..., 2.0}{%	For each y
+		%% Set the resultant field strength to 0
+		\pgfmathsetmacro\ERi{0}	% Resultant, i component
+		\pgfmathsetmacro\ERj{0}	% Resultant, j component
+
+		%% Ensure that this isn't the location of a particle.
+		\pgfmathsetmacro\safe{1}
+		\foreach [remember=\safe as \safe] \px/\py/\c in \particles {%
+			\pgfmathsetmacro\safe{%
+				and( \safe, not(
+					and( equal( \y, \py ),
+					     equal( \x, \px ) ) )
+				)
+			}
+		}
+		\pgfmathtruncatemacro\safe{\safe}
+
+		\ifnumequal{\safe}{1}{	% Not the position of a particle, go!
+			%% Now accumulate the contribution from each particle.
+			\foreach [remember=\ERi as \ERi, remember=\ERj as \ERj]
+				\px/\py/\pc in \particles {%
+				%% Coulomb's Law
+				%% -------------
+				%% Calculate the vector between the current point and the charge in question
+				\pgfmathsetmacro\ri{\x - \px}	% i component
+				\pgfmathsetmacro\rj{\y - \py}	% j component
+	
+				%% Now normalise this vector
+				% Magnitude
+				\pgfmathsetmacro\rMAG{sqrt(\ri*\ri + \rj*\rj)}
+				\pgfmathsetmacro\riN{\ri/\rMAG}	% Norm. i
+				\pgfmathsetmacro\rjN{\rj/\rMAG}	% Norm. j
+					
+				%% We can now determine the electric field strength contribution for this particle,
+				%% and then accumulate this to gain our final result.
+				\pgfmathsetmacro\ei{\ke*\pc*\riN/(\rMAG*\rMAG)}
+				\pgfmathsetmacro\ej{\ke*\pc*\rjN/(\rMAG*\rMAG)}
+
+				%% And perform the accumulation
+				\pgfmathsetmacro\ERi{\ERi + \ei}
+				\pgfmathsetmacro\ERj{\ERj + \ej}
+			}
+
+			%% Now we have the electric field strength for this position in space.  Determine the direction of the
+			%% vector, and then the required hue for the arrow.
+			\pgfmathsetmacro\ERarg{atan( \ERj / \ERi )}
+			\pgfmathsetmacro\ERmag{sqrt( \ERi*\ERi + \ERj*\ERj )}
+
+			%% Determine the hue
+			\pgfmathsetmacro\ERhue{1 - (\ERmag/\Emax)}
+			\definecolor{elemcol}{hsb}{\ERhue,1,1}
+	
+			%% Draw the arrow
+			\begin{scope}[xshift=\x cm, yshift=\y cm]
+				\draw [thick, ->, elemcol]
+					(\ERarg:-.125cm) --
+					++(\ERarg:.25cm)
+				;
+			\end{scope}
+		}{}
+	}
+}
+\end{tikzpicture}

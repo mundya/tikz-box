@@ -1,0 +1,73 @@
+\section{Some Further Examples}
+\subsection{Animating a Diagram -- Free Body Projection}
+
+\mode<presentation>
+\begin{frame}[label=projection]
+	\frametitle{Animating a Diagram -- Free Body Projection}
+	\begin{center}
+		\input{examples.beamer/projection}
+	\end{center}
+\end{frame}
+\mode*
+
+Ti\emph{k}Z integrates well with Beamer (they were created by the same person) -- the code in Listing \ref{listing.examples.projection} shows the motion of a projected particle at time intervals of one second, output in Figure \ref{figure.examples.projection}.
+
+\begin{figure}[!Btp]
+	\centering
+	\foreach \n in {1,...,4}{%
+		\begin{subfigure}{.225\textwidth}
+			\includeslide[width=\textwidth]{projection<\n>}
+		\end{subfigure}
+	}
+	\caption{Animated free body projection using TikZ and Beamer}
+	\label{figure.examples.projection}
+\end{figure}
+
+\lstinputlisting[language=TeX, caption={Animating a free body projection with TikZ and Beamer.}, label={listing.examples.projection}]{examples.beamer/projection}
+
+\subsection{Petri Nets}
+
+\mode<presentation>
+\begin{frame}[label=petri]
+	\frametitle{Petri Nets, Illustrating Chains and Matrices}
+	\begin{center}
+		\input{examples.beamer/petri}
+	\end{center}
+\end{frame}
+\mode*
+
+This example introduces two exceptionally important libraries that we sadly didn't have time for in the talk, \textbf{matrices} and \texttt{chains}.
+As expected, matrices allow for grid like placing of nodes; and chains are a semantic method for joining groups on nodes up.
+The Petri Net example shown in Listing \ref{listing.examples.petri} is animated for Beamer (in that it transitions through several markings), and the first slide is shown in Figure \ref{figure.examples.petri}.
+
+\begin{figure}[btp]
+	\centering
+	\includeslide[width=.5\textwidth]{petri}
+	\caption{Petri Nets in TikZ}
+	\label{figure.examples.petri}
+\end{figure}
+
+\lstinputlisting[language=TeX, caption={An animated Petri Net.}, label={listing.examples.petri}]{examples.beamer/petri}
+
+\subsection{Vector Fields (Charged Particles)}
+
+\mode<presentation>
+\begin{frame}
+	\frametitle{Vector Fields (Charged Particles)}
+	\begin{center}
+		\includegraphics{examples.beamer/field-crop}
+	\end{center}
+\end{frame}
+\mode*
+
+Hopefully, this should be of interest, but mostly as an example of something that is not particularly efficient in Ti\emph{k}Z.
+Essentially, the code, in Listing \ref{listing.examples.field}, models the electric field due to several charged particles in 2D space, the resulting graphic uses hue to represent field strength and an arrow to illustrate field direction, as in Figure \ref{figure.examples.fields}.
+
+\begin{figure}[btp]
+	\centering
+	\includegraphics{examples.beamer/field-crop}
+	\caption{Computing and illustrating vector fields using TikZ and PGF}
+	\label{figure.examples.fields}
+\end{figure}
+
+\lstinputlisting[language=TeX, caption={Illustrating a vector field using TikZ and PGF.}, label={listing.examples.field}]{examples.beamer/field}

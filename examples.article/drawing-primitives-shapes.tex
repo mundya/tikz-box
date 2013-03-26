@@ -1,0 +1,18 @@
+\begin{tikzpicture}
+	%% Rectangle
+	\draw [thick, red] (0,0) rectangle ++(1em, 1em);
+
+	%% Circle
+	\draw [thick, blue] (2em,0) circle [radius=1em];
+
+	%% Ellipse
+	\draw [thick, purple] (4em,0) ellipse [x radius=0.5em, y radius=1em];
+
+	%% Curved Line linking into Arc
+	\draw [thick, black!25!white] (5em,0)
+		.. controls ++(45:1em) and ++(90:1em) ..
+		++(1em,-1em) arc [start angle=270, end angle=0, radius=1em]
+	;
+	%% colour1!(0 <= x <= 100)!colour2 mixes colours by percentage
+	%% i.e. black!25!white is 25% black, 75% white
+\end{tikzpicture}

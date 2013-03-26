@@ -1,0 +1,10 @@
+\begin{tikzpicture}[
+	every label/.style = {font=\tiny},
+]
+	\node [minimum width=10em, minimum height=5em, draw, very thick, fill=yellow] (n1) {};
+
+	\foreach \anchor/\labeldir in {west/left, north west/above, north/above, north east/above,
+				       east/right, south east/below, south/below, south west/below, center/above}{%
+		\node at (n1.\anchor) [label={\labeldir:{\textit{node}.\anchor}}, draw, ultra thick, fill=white] {};
+	}
+\end{tikzpicture}

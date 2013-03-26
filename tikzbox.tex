@@ -1,0 +1,41 @@
+%% Presentation Information
+\title{Ticking the Ti\emph{k}Z Box}
+\subtitle{Creating Diagrams with PGF/Ti\emph{k}Z}
+\author{Andrew Mundy\\andrew.mundy@cs.man.ac.uk}
+\date{}
+
+%% TikZ
+\usepackage{tikz}
+\usetikzlibrary{automata,chains,scopes,patterns,petri}
+
+%% etoolbox
+\usepackage{etoolbox}
+
+%% Subcaptions
+\usepackage{subcaption}
+
+%% Listings
+\lstset{
+	frame = tb,
+	columns = fullflexible,
+}
+
+\begin{document}
+	%% Document title
+	\maketitle
+	\begin{frame}
+		\titlepage
+	\end{frame}
+
+	%% Grovel!
+	I really hope that this document proves to be a useful reference; but am aware that it isn't as complete, or as well written, as I would desire!
+	There are some pointers to better references on the last page.
+
+	%% Include relevant sections
+	\mode<all>
+		\input{sections/getting-started}
+		\input{sections/worked-example-1}
+		\appendix
+		\input{sections/further-examples}
+	\mode*
+\end{document}

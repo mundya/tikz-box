@@ -1,0 +1,88 @@
+%% Free Body Projection Diagram for Beamer
+%% ---------------------------------------
+%% (C) Andrew Mundy 2013
+%%
+%% Shows the displacement and velocity of a particle
+%% projected with given initial velocity and displacement
+%% from time t=0 until the last integral time before the
+%% particle would hit the ground.
+%%
+%% Usage:
+%% Just place in a Beamer frame.
+
+\begin{tikzpicture}[
+	xscale=0.25,
+	yscale=0.20,
+	ball/.style = {circle, fill=uomgrey!50!white},
+	vector/.style = {thick, ->, uomgrey!50!white},
+	current ball/.style = {ball, fill=blue},
+	current vector/.style = {vector, blue},
+	every label/.style = {font=\tiny},
+]
+	%% Set the initial velocity
+	\def\ui{5}
+	\def\uj{15}
+
+	%% Set the initial position
+	\def\si{0}
+	\def\sj{0}
+
+	%% Set the acceleration
+	\def\ai{0}
+	\def\aj{-9.8}
+
+	%% Determine the point when we reach the ground, and round down for the last integral
+	%% time interval to show.
+	\pgfmathsetmacro\groundt{-(2*\uj)/\aj}
+	\pgfmathtruncatemacro\maxt{floor(\groundt)}
+	\pgfmathsetmacro\maxsi{\si + \ui*\groundt + (\ai*\groundt*\groundt)/2}
+
+	%% Some PGF Configuration
+	%% Prints floats with up to 2d.p.
+	\pgfkeys{/pgf/number format/.cd,fixed,precision=2}
+
+	%% Draw the ground
+	\draw (0,0) -- (\maxsi, 0);
+	\fill [pattern=north west lines, pattern color=gray] (0,0) rectangle (\maxsi, -5em);
+
+	%% Now display the ball for times 0, 1, ..., \maxt
+	\foreach [count=\c] \t in {0,...,\maxt}{%
+		%% Determine the current position
+		%% s = ut + 1/2at^2
+		\pgfmathsetmacro\sti{\si + \ui*\t + (\ai*\t*\t)/2}
+		\pgfmathsetmacro\stj{\sj + \uj*\t + (\aj*\t*\t)/2}
+
+		%% Determine the current velocity
+		\pgfmathsetmacro\vti{\ui + \ai*\t}
+		\pgfmathsetmacro\vtj{\uj + \aj*\t}
+
+		%% Convert the velocity to polar co-ordinates
+		%% [1] Strictly not necessary, but cool
+		\pgfmathsetmacro\argvt{atan( \vtj / \vti )}
+		\pgfmathsetmacro\magvt{sqrt( \vti*\vti + \vtj*\vtj )}
+
+		%% Save the ball's position as a co-ordinate
+		\coordinate (ball-at-\t) at (\sti, \stj);
+
+		%% Draw the ball (shadow/past)
+		\pgfmathtruncatemacro\ci{\c + 1}
+		\visible<\ci->{
+			\node at (ball-at-\t) [ball] {};
+			\draw [vector] (ball-at-\t.center) -- ++(\argvt:\magvt);
+			%% Would have worked equally well (and saved us [1] above)
+			% \draw [vector] (ball-at-\t.center) -- ++(\vti,\vtj);
+		}
+
+		%% Draw the ball
+		\visible<\c>{ 
+			\node at (ball-at-\t) [
+				current ball,
+				label={left:{$\vec{v}(\t) = \pgfmathprintnumber{\vti}\vec{i} +%
+						\pgfmathprintnumber{\vtj}\vec{j}$}},
+			] {};
+			\draw [current vector] (ball-at-\t.center) -- ++(\argvt:\magvt);
+			%% Would have worked equally well
+			% \draw [current vector] (ball-at-\t.center) -- ++(\vti,\vtj);
+		}
+	}
+\end{tikzpicture}
