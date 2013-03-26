@@ -1,0 +1,12 @@
+\foreach [count=\m] \l in {%
+	{1/1, 2/1, 2/5, 3/3, 4/2, 5/4, 5/5, 6/5, 7/6, 7/7, 8/8},	% 1st to 2nd
+	{1/1, 1/2, 2/1, 3/1, 3/2, 4/3, 5/3, 6/4, 7/4, 8/4},		% 2nd to 3rd
+	{1/1, 2/1, 2/2, 3/1, 3/2, 4/2},					% 3rd to 4th
+}{%
+	%% \m is the start row, let \n be the end row
+	\pgfmathtruncatemacro\n{\m+1}	% Truncate makes an int from a float
+
+	\foreach \u/\v in \l {% Here \l is one of the lists defined above
+		\draw (\m-\u) to (\n-\v);	% Almost as before
+	}
+}

@@ -1,0 +1,68 @@
+%% Simple Petri Net Model
+%% ----------------------
+%% (C) Andrew Mundy 2013
+%% 
+%% Displays a simple Petri net and then evolves the markings.
+%% 
+%% Requirements
+%% ------------
+%% \usepackage{tikz}
+%% \usetikzlibrary{automata, chains, petri, matrices, scopes}
+
+\begin{tikzpicture}[
+	petri node/.style = {minimum size=1em},
+	petri join/.style = {very thick, ->, shorten >= 1pt},
+%
+	place/.style = {petri node, circle, draw, very thick},
+	transition/.style = {petri node, rectangle, fill},
+%
+	every join/.style = {petri join},
+	every matrix/.style = {row sep = 1em, column sep = 2em},
+	every token/.style = {fill=contentgray},	%% Remove this line if you get an error
+]
+
+	%% Draw the Petri Net
+	%% Using a matrix for node placement, the & character signifies a new column, and \\ a new row.
+	\matrix [] {
+		\node [place] (p1) {}; & & \node [place] (p2) {};	\\
+		\node [transition, label=left:$a$] (a) {}; & & \node [transition, label=right:$b$] (b) {};	\\
+		\node [place] (p3) {}; & & \node [place] (p4) {};	\\
+		& \node [transition, label=below:$c$] (c) {};			\\
+	};
+
+	%% Here create a chain, and use the \chainin command to add pre-existing nodes
+	%% The join option draws the join between one node and the previous.
+	{ [start chain=thr1]
+		\chainin (p1);
+		\chainin (a) [join];
+		\chainin (p3) [join];
+		\chainin (c) [join=by {petri join, bend right}];
+		\chainin (p1) [join=by {petri join, out=90, in=0}];
+	}
+
+	{ [start chain=thr2]
+		\chainin (p2);
+		\chainin (b) [join];
+		\chainin (p4) [join];
+		\chainin (c) [join=by {petri join, bend left}];
+		\chainin (p2) [join=by {petri join, out=90, in=180}];
+	}
+
+	%% Draw the markings
+	%% Each marking is a list of places with a token present
+	\foreach [count=\c from 1] \marking in {%
+		{1,2},		   % Initial Marking
+		{3,2},		   % a fired
+		{3,4},		   % b fired
+		{1,2},		   % c fired
+		{1,4},		   % b fired
+		{3,4},		   % a fired
+		{1,2}%
+	}{%
+		\only<\c>{%
+			\foreach \place in \marking {%
+				\node [token] at (p\place) {};
+			}
+		}
+	}
+\end{tikzpicture}
